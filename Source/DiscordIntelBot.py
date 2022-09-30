@@ -10,7 +10,7 @@ import atexit
 
 import feedparser
 from configparser import ConfigParser, NoOptionError
-from discord import Webhook, RequestsWebhookAdapter
+from discord import SyncWebhook # Import SyncWebhook
 
 from Formatting import format_single_article
 
@@ -20,11 +20,10 @@ configuration_file_path = os.path.join(
 )
 
 # put the discord hook urls to the channels you want to receive feeds in here
-private_sector_feed = Webhook.from_url('https://discord.com/api/webhooks/1010160451985866824/N-HfWXwXKfoonso91UzwEQ2grguUBSWXGuO-h0NptNWWIP15G3lX--b3Hn6jQ0dwcg3V/github', adapter=RequestsWebhookAdapter())
-government_feed = Webhook.from_url('https://discord.com/api/webhooks/1010160586656596008/pUcOmTd_QSMjhQAlPb3JRJ7Cb2eBHtYMCWejN4JWPCSn2PoGVPpaf8Gq-IgWH9AXJRNB/github', adapter=RequestsWebhookAdapter())
-ransomware_feed = Webhook.from_url('https://discord.com/api/webhooks/1010159571685359657/6yF3L71zgh62QMLVa6Og3wLzWd9gjA1LpcjAuEWfZuwzCqzmoydun1-Cdgqk2PRpK8rE/github', adapter=RequestsWebhookAdapter())
+private_sector_feed = SyncWebhook.from_url('https://discord.com/api/webhooks/1010160451985866824/N-HfWXwXKfoonso91UzwEQ2grguUBSWXGuO-h0NptNWWIP15G3lX--b3Hn6jQ0dwcg3V/github')
+government_feed = SyncWebhook.from_url('https://discord.com/api/webhooks/1010160586656596008/pUcOmTd_QSMjhQAlPb3JRJ7Cb2eBHtYMCWejN4JWPCSn2PoGVPpaf8Gq-IgWH9AXJRNB/github')
 # this one is logging of moniotring status only
-status_messages = Webhook.from_url('https://discord.com/api/webhooks/1010160699684700242/WlCdmqE7mIL3q8xuN45Pk_DqkLb8LYZrWLekFHH33P3N3YXRnGZX8tZSmXABRNlc_CFb/github', adapter=RequestsWebhookAdapter())
+status_messages = SyncWebhook.from_url('https://discord.com/api/webhooks/1010160699684700242/WlCdmqE7mIL3q8xuN45Pk_DqkLb8LYZrWLekFHH33P3N3YXRnGZX8tZSmXABRNlc_CFb/github')
 
 
 private_rss_feed_list = [
@@ -77,27 +76,11 @@ source_details = {
         "hook": government_feed,
         "type": FeedTypes.RSS,
     },
-    "Ransomware News": {
-        "source": "https://raw.githubusercontent.com/joshhighet/ransomwatch/main/posts.json",
-        "hook": ransomware_feed,
-        "type": FeedTypes.JSON,
-    },
 }
 
 
 config_file = ConfigParser()
 config_file.read(configuration_file_path)
-
-
-def get_ransomware_news(source):
-    posts = requests.get(source).json()
-
-    for post in posts:
-        post["publish_date"] = post["discovered"]
-        post["title"] = "Post: " + post["post_title"]
-        post["source"] = post["group_name"]
-
-    return posts
 
 
 def get_news_from_rss(rss_item):
@@ -183,11 +166,7 @@ def main():
     while True:
         for detail_name, details in source_details.items():
             write_status_messages_to_discord(f"Checking {detail_name}")
-
-            if details["type"] == FeedTypes.JSON:
-                process_source(get_ransomware_news, details["source"], details["hook"])
-            elif details["type"] == FeedTypes.RSS:
-                handle_rss_feed_list(details["source"], details["hook"])
+            handle_rss_feed_list(details["source"], details["hook"])
 
         write_status_messages_to_discord("All done")
         with open(configuration_file_path, "w") as f:
