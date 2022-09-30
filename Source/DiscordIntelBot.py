@@ -20,14 +20,16 @@ configuration_file_path = os.path.join(
 )
 
 # put the discord hook urls to the channels you want to receive feeds in here
-private_sector_feed = Webhook.from_url('https://discord.com/api/webhooks/000/000', adapter=RequestsWebhookAdapter())
-government_feed = Webhook.from_url('https://discord.com/api/webhooks/000/000', adapter=RequestsWebhookAdapter())
-ransomware_feed = Webhook.from_url('https://discord.com/api/webhooks/000/000', adapter=RequestsWebhookAdapter())
+private_sector_feed = Webhook.from_url('https://discord.com/api/webhooks/1010160451985866824/N-HfWXwXKfoonso91UzwEQ2grguUBSWXGuO-h0NptNWWIP15G3lX--b3Hn6jQ0dwcg3V/github', adapter=RequestsWebhookAdapter())
+government_feed = Webhook.from_url('https://discord.com/api/webhooks/1010160586656596008/pUcOmTd_QSMjhQAlPb3JRJ7Cb2eBHtYMCWejN4JWPCSn2PoGVPpaf8Gq-IgWH9AXJRNB/github', adapter=RequestsWebhookAdapter())
+ransomware_feed = Webhook.from_url('https://discord.com/api/webhooks/1010159571685359657/6yF3L71zgh62QMLVa6Og3wLzWd9gjA1LpcjAuEWfZuwzCqzmoydun1-Cdgqk2PRpK8rE/github', adapter=RequestsWebhookAdapter())
 # this one is logging of moniotring status only
-status_messages = Webhook.from_url('https://discord.com/api/webhooks/000/000', adapter=RequestsWebhookAdapter())
+status_messages = Webhook.from_url('https://discord.com/api/webhooks/1010160699684700242/WlCdmqE7mIL3q8xuN45Pk_DqkLb8LYZrWLekFHH33P3N3YXRnGZX8tZSmXABRNlc_CFb/github', adapter=RequestsWebhookAdapter())
+
 
 private_rss_feed_list = [
     ['https://grahamcluley.com/feed/', 'Graham Cluley'],
+    ['http://feeds.feedburner.com/OfficeOfInadequateSecurity', 'DataBreaches'],
     ['https://threatpost.com/feed/', 'Threatpost'],
     ['https://krebsonsecurity.com/feed/', 'Krebs on Security'],
     ['https://www.darkreading.com/rss.xml', 'Dark Reading'],
@@ -57,6 +59,7 @@ private_rss_feed_list = [
 
 gov_rss_feed_list = [
     ["https://www.cisa.gov/uscert/ncas/alerts.xml", "US-CERT CISA"],
+    ['https://www.cisa.gov/uscert/ncas/current-activity.xml', 'CISA_Activity'],
     ["https://www.ncsc.gov.uk/api/1/services/v1/report-rss-feed.xml", "NCSC"],
     ["https://www.cisecurity.org/feed/advisories", "Center of Internet Security"],
 ]
