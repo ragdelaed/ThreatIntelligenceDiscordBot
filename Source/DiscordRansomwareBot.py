@@ -89,7 +89,7 @@ def proccess_articles(articles):
         t=article['post_title']
         g=article["group_name"]
         d=article["discovered"]
-        string="Discord^"+g+"^"+d+"^"+t
+        string="Source^Discord\r\n"+"Threat_Actor_Group^"+g+"\r\n"+"Timestamp^"+d+"\r\n"+"Alleged_Victim^"+t
         try:
             config_entry = config_file.get("main", article["source"])
         except NoOptionError:  # automatically add newly discovered groups to config
