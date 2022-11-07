@@ -69,8 +69,6 @@ def send_email(string):
     except Exception as e:
         # Print any error messages to stdout
         print(e)
-    finally:
-        s.quit()
 
 def get_ransomware_news(source):
     posts = requests.get(source).json()
