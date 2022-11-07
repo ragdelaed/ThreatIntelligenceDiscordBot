@@ -143,7 +143,7 @@ def main():
             write_status_messages_to_discord(f"Checking {detail_name}")
             process_source(get_ransomware_news, details["source"], details["hook"])
 
-        write_status_messages_to_discord("All done")
+        write_status_messages_to_discord("All done with ransomware check")
         with open(configuration_file_path, "w") as f:
             config_file.write(f)
 
