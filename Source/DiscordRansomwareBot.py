@@ -43,7 +43,7 @@ def send_email(string):
     smtp_server = "smtp.gmail.com"
     port = 587  # For starttls
     sender_email = "ragdelaed@gmail.com"
-    password = "ubjpcdiiivpwling"
+    password = "<password>"
     
     import smtplib
     from email.mime.text import MIMEText
@@ -51,7 +51,7 @@ def send_email(string):
 
     subject="Ransomware_Discord_Bot_Alert"
     sender="ragdelaed@gmail.com"
-    to="edgar.deal@bms.com"
+    to="<to email>"
     msg = MIMEText(string, _charset='UTF-8')
     msg['Subject'] = subject
     msg['Message-ID'] = email.utils.make_msgid()
