@@ -2,6 +2,7 @@ import json
 import os
 import requests
 import time
+import datetime
 from enum import Enum
 
 import signal
@@ -40,32 +41,32 @@ config_file.read(configuration_file_path)
 
 def send_email(string):
 
-    smtp_server = "smtp.gmail.com"
-    port = 587  # For starttls
-    sender_email = "ragdelaed@gmail.com"
-    password = "<password>"
-    
     import smtplib
     from email.mime.text import MIMEText
     import email.utils
 
+    
     subject="Ransomware_Discord_Bot_Alert"
-    sender="ragdelaed@gmail.com"
-    to="<to email>"
+    sender="<from_address>"
+    to="<to_address>"
     msg = MIMEText(string, _charset='UTF-8')
     msg['Subject'] = subject
     msg['Message-ID'] = email.utils.make_msgid()
     msg['Date'] = email.utils.formatdate(localtime=1)
     msg['From'] = sender
-    msg['To'] = to   
+    msg['To'] = to
     msg.add_header('Precedence', 'bulk')
-    # Create a secure SSL context
-    context = ssl.create_default_context()
     try:
-        s = smtplib.SMTP(smtp_server,port)
-        s.starttls(context=context) # Secure the connection
-        s.login(sender_email, password)        
+        # Create context (to specify TLS version)
+        sc = ssl.create_default_context ()
+        sc.check_hostname = False
+        sc.verify_mode = ssl.CERT_NONE        
+        s = smtplib.SMTP('smtp.gmail.com')
+        s.connect('smtp.gmail.com', '587')
+        s.starttls(context=sc) # Secure the connection
+        s.login("<user>", "<password>")        
         s.sendmail(msg['From'], {msg['To'], sender }, msg.as_string())
+        s.quit()
     except Exception as e:
         # Print any error messages to stdout
         print(e)
@@ -87,6 +88,9 @@ def proccess_articles(articles):
         t=article['post_title']
         g=article["group_name"]
         d=article["discovered"]
+        # datetime from json is 2020-01-12 00:00:00.000000
+        dateTimeObject=datetime.datetime.strptime(d, '%Y-%m-%d %H:%M:%S.%f')
+        d = datetime.datetime.strftime(dateTimeObject, '%m/%d/%Y %H:%M:%S')
         string="Discord^"+g+"^"+d+"^"+t
         try:
             config_entry = config_file.get("main", article["source"])
@@ -120,11 +124,6 @@ def process_source(post_gathering_func, source, hook):
     raw_articles = post_gathering_func(source)
     processed_articles, new_raw_articles = proccess_articles(raw_articles)
     send_messages(hook, processed_articles, new_raw_articles)
-
-def handle_rss_feed_list(rss_feed_list, hook):
-    for rss_feed in rss_feed_list:
-        status_messages.send(f"> {rss_feed[1]}")
-        process_source(get_news_from_rss, rss_feed, hook)
 
 def write_status_messages_to_discord(message):
     status_messages.send(f"**{time.ctime()}**: *{message}*")
